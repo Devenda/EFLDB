@@ -241,7 +241,7 @@ class HookManager(threading.Thread):
         if asciinum < 256:
             return asciinum
         else:
-            return 0
+            return asciinum
     
     def makekeyhookevent(self, keysym, event):
         storewm = self.xwindowinfo()

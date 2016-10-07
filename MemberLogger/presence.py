@@ -34,5 +34,6 @@ while True:
 	
 		# Make sure data is committed to the database
 		cnx.commit()
+hookman.cancel()
 cursor.close()
 cnx.close()

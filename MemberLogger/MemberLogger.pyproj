@@ -22,13 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="input.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="presence.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="pyxhook.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pyxhookExample.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

@@ -11,7 +11,7 @@ while True:
 		
 	qy_find_presence = "SELECT row_id FROM ecofablab.presence WHERE date(arrival_time) = '{}' AND departure_time IS NULL AND member_id = '{}'".format(datetime.now().strftime('%Y-%m-%d'), member_id)
 	print(qy_find_presence)
-	cursor.execute(qy_find_presence)
+	cursor.execute(qy_find_presence) 
 
 	#set departure time when badging a second time on the same day
 	qy_update_presence = ""

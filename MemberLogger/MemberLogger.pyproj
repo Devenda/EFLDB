@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7db8f1d0-6f01-425c-a903-0a8bd890194d</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>presence.py</StartupFile>
+    <StartupFile>input.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,7 +25,10 @@
     <Compile Include="input.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="presence.py">
+    <Compile Include="main.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="database.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="pyxhook.py">

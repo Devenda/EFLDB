@@ -1,33 +1,55 @@
-import pyxhook
+import evdev
+from evdev import InputDevice, categorize, ecodes
 import database
 
 class input(object):
 
-	memberIDList = list()
-	prevEvent = str()
-	numbers = {"agrave":0,"ampersand":1,"eacute":2,"quotedbl":3,"apostrophe":4,"parenleft":5,"section":6,"egrave":7,"exclam":8,"ccedilla":9}
-	db = database.database()
+    memberIDList = list()
+    prevEvent = str()
+    numbers = {"11":0,"2":1,"3":2,"4":3,"5":4,"6":5,"7":6,"8":7,"9":8,"10":9}
 
-	def keyboardEvent(self,event):
-		wasThereAnEvent = False
+    db = database.database()
 
-		# if event key is number
-		if event.Key in self.numbers and (self.prevEvent in self.numbers or not self.prevEvent):
-			self.memberIDList.append(self.numbers[event.Key])
-		elif event.Key == "Return" and len(self.memberIDList) == 10:
-			print(str(self.memberIDList))
-			# write scan to db
-			self.db.writePresence(''.join(str(idInt) for idInt in self.memberIDList))
-			self.memberIDList.clear()
-		else:
-			print(str(event.Key))
+    def __init__(self,device):
+        self.device = evdev.InputDevice(device)
+        print("Listening on device: " + str(device))
+    
+    def listDevices(self):
+        self.devices = [evdev.InputDevice(fn) for fn in evdev.list_devices()]
+        for device in self.devices:
+            print(self.device.fn, self.device.name, self.device.phys)
 
-	def __init__(self):
-		#Create hookmanager
-		self.hookman = pyxhook.HookManager()
-		#Define our callback to fire when a key is pressed down
-		self.hookman.KeyDown = self.keyboardEvent
-		#Hook the keyboard
-		self.hookman.HookKeyboard()
-		#Start our listener
-		self.hookman.start()
+    def getActiveKeys(self):
+        print(self.device.active_keys(verbose=True))
+        
+    def keyboardEvent(self,event):
+        # if event key is number
+        if  event.value == 1 and str(event.code) in self.numbers and (self.prevEvent in self.numbers or not self.prevEvent):
+            self.memberIDList.append(self.numbers[str(event.code)])
+            #print("Known key: ",str(event.code))
+        elif event.value == 1 and str(event.code) == "28" and len(self.memberIDList) == 10:
+            memberId = ''.join(str(idInt) for idInt in self.memberIDList)
+            
+            # write scan to db
+            self.db.writePresence(''.join(str(idInt) for idInt in self.memberIDList))
+            print("Processed memberId")
+            
+            self.memberIDList.clear()
+            self.prevEvent = str()
+        elif event.value == 1 and str(event.code) == "28":
+            self.memberIDList.clear()
+        elif event.value == 0:
+            pass
+        else:            
+            print("Unknow key: "+ str(event.code))
+
+    def listenForInput(self):
+        for event in self.device.read_loop():
+            if event.type == ecodes.EV_KEY:
+                self.keyboardEvent(event)
+                #print("code: ", event.code, " name: ", ecodes.KEY[event.code], event.value)
+                #print(categorize(event))
+
+    def keys(self):
+        for k in range(0, 12):
+            print("k: " + str(k) + "name " + str(ecodes.KEY[k]) )  
